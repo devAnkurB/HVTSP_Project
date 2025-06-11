@@ -2,10 +2,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>DocuBridge</title>
+    <title>Project Home</title>
 </head>
 <body>
     <h2>DocuBridge</h2>
     <p>Allows users to upload a financial model and ask questions about it.</p>
+    <hr />
+    <form method="POST" action="/upload">
+        <input type="file" name="excel_file" />
+        <input type="text" name="user_question" placeholder="Ask a question..." />
+        <button type="submit">Submit</button>
+    </form>
 </body>
 </html>
