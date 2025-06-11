@@ -7,7 +7,7 @@
     <h2>DocuBridge</h2>
     <p>Allows users to upload a financial model and ask questions about it.</p>
     <hr />
-    <form method="POST" action="/upload">
+    <form method="POST" action="/upload" enctype="multipart/form-data">
         <input type="file" name="excel_file" />
         <input type="text" name="user_question" placeholder="Ask a question..." />
         <button type="submit">Submit</button>
