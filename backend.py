@@ -10,4 +10,4 @@ def handle_upload(request):
     else:
         print("No file uploaded")
 
-    return f"<h2>Data Received!</h2><p>Question: {user_question}</p><p>File: {excel_file.filename if excel_file else 'No File'}</p>"
+    return f"<h2>Data Received!</h2><p>Question: {user_question if user_question else 'No Question Was Submitted'}</p><p>File: {excel_file.filename if excel_file else 'No File Was Submitted'}</p>"
