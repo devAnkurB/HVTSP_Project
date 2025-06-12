@@ -3,21 +3,20 @@ import openpyxl
 import openai
 import os
 
-# Initialize OpenAI client
+
 def get_openai_client():
     api_key = os.getenv('OPENAI_API_KEY')
     if not api_key:
         return None
     return openai.OpenAI(api_key=api_key)
 
-def get_chatgpt_response(file_data, user_question, custom_prompt=""):
+
+def get_chatgpt_response(file_data, user_question=""):
     client = get_openai_client()
     if not client:
-        return "OpenAI API key not configured. Please add your API key to the secrets."
-    
-    # Prepare the prompt with file data and user question
+        return "Please use an OpenAI API key to access this feature."
+
     system_prompt = f"""
-    {custom_prompt}
     
     You are an AI assistant that analyzes financial data and answers questions about it.
     Below is data from an uploaded Excel file, followed by a user question.
@@ -29,20 +28,26 @@ def get_chatgpt_response(file_data, user_question, custom_prompt=""):
     
     Please provide a helpful and accurate response based on the data provided.
     """
-    
+
     try:
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_question}
-            ],
-            max_tokens=500,
-            temperature=0.7
-        )
+        response = client.chat.completions.create(model="gpt-3.5-turbo",
+                                                  messages=[{
+                                                      "role":
+                                                      "system",
+                                                      "content":
+                                                      system_prompt
+                                                  }, {
+                                                      "role":
+                                                      "user",
+                                                      "content":
+                                                      user_question
+                                                  }],
+                                                  max_tokens=500,
+                                                  temperature=0.7)
         return response.choices[0].message.content
     except Exception as e:
         return f"Error getting ChatGPT response: {str(e)}"
+
 
 def handle_upload(request):
     excel_file = request.files.get('excel_file')
@@ -55,16 +60,15 @@ def handle_upload(request):
             missingParameters.append("excel file")
         if not user_question:
             missingParameters.append("user question")
-        return f"<h2>Incomplete Form Data Was Received!</h2><p>Please provide the following missing parameters: {', '.join(missingParameters)}</p>"            
+        return f"<h2>Incomplete Form Data Was Received!</h2><p>Please provide the following missing parameters: {', '.join(missingParameters)}</p>"
 
     if excel_file:
         print(f"File Name: {excel_file.filename}")
         print(f"File Content Type: {excel_file.content_type}")
-        
-        # Get ChatGPT response
+
         file_preview = df.head(10).to_string()
         chatgpt_response = get_chatgpt_response(file_preview, user_question)
-        
+
         return f"""
         <h2>Analysis Complete!</h2>
         <h3>Your Question:</h3>
