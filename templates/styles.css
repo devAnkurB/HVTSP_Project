@@ -1,0 +1,313 @@
+/* Reset & basics */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #202123;
+  color: #e6e6e6;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1001;
+  background-color: #343541;
+  color: white;
+  font-weight: 700;
+  font-size: 1.75rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #444654;
+  user-select: none;
+}
+
+.main-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1rem 12px 5.5rem 12px; /* Asymmetric padding: top right bottom left */
+  background: #202123;
+  width: 100vw;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+
+.chat-window {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  
+  margin: 0 auto;
+  padding-bottom: 1rem;
+  width: 100%; /* make chat window full width inside padded container */
+}
+
+/* Messages */
+.message {
+  display: flex;
+  max-width: 100%; /* Removed the 90% constraint */
+}
+
+.user-message {
+  justify-content: flex-end;
+  padding-right: 6px; /* Add small right padding only for user messages */
+}
+
+.user-message .bubble {
+  background: #005fff;
+  color: white;
+  border-radius: 1rem 1rem 0.25rem 1rem;
+  padding: 0.8rem 1rem;
+  max-width: 400px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  font-weight: 500;
+}
+
+.ai-message {
+  justify-content: flex-start;
+}
+
+.ai-message .bubble {
+  background: #343541;
+  border: 1px solid #444654;
+  border-radius: 1rem 1rem 1rem 0.25rem;
+  padding: 0.8rem 1rem;
+  max-width: 400px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  font-weight: 400;
+  color: #d1d5db;
+}
+
+/* File message - now styled as user message on the right */
+.file-message {
+  justify-content: flex-end; /* Changed from flex-start to flex-end */
+}
+
+.file-attachment {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #005fff; /* Changed from #343541 to match user message color */
+  border: 1px solid #005fff; /* Changed border color to match */
+  padding: 0.6rem 1rem;
+  border-radius: 0.7rem;
+  max-width: 400px;
+  text-decoration: none;
+  color: white; /* Changed from #d1d5db to white */
+  user-select: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.file-attachment:hover,
+.file-attachment:focus {
+  background-color: #003dcc; /* Darker blue on hover */
+  border-color: #003dcc;
+  color: white;
+}
+
+.file-icon {
+  font-size: 1.7rem;
+  user-select: none;
+}
+
+.file-details {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.file-name {
+  font-weight: 600;
+  font-size: 1rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.file-size {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7); /* Changed to lighter white for file size */
+}
+
+/* Error message centered & fully rounded */
+.error-message {
+  justify-content: center !important;
+  margin: 1rem auto;
+  max-width: 80%;
+}
+
+.error-message .bubble {
+  background: #ff4d4d;
+  color: white;
+  border-radius: 9999px;
+  padding: 0.7rem 1.2rem;
+  font-weight: 600;
+  text-align: center;
+  max-width: 100%;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+/* Input area */
+.input-area {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  background-color: #343541;
+  gap: 0.6rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  max-width: 100vw;
+  box-shadow: 0 -1px 6px rgb(0 0 0 / 0.6);
+  z-index: 1000;
+}
+
+/* File upload button */
+.upload-icon {
+  cursor: pointer;
+  font-size: 1.4rem;
+  height: 3.5rem;
+  width: 3.5rem;
+  border-radius: 0.5rem;
+  color: #9ca3af;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  background-color: #343541;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.upload-icon:hover,
+.upload-icon:focus {
+  color: #005fff;
+  background-color: #2a2e3a;
+  border-color: #005fff;
+}
+
+.upload-icon input[type="file"] {
+  display: none;
+}
+
+/* Text input */
+#userQuestionInput {
+  flex-grow: 1;
+  height: 3.5rem;
+  background-color: #202123;
+  border: 1px solid #555;
+  border-radius: 0.5rem;
+  padding: 0 1rem;
+  font-size: 1rem;
+  color: #e6e6e6;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+#userQuestionInput::placeholder {
+  color: #6b7280;
+}
+
+#userQuestionInput:focus {
+  border-color: #005fff;
+  box-shadow: 0 0 0 2px rgba(0, 95, 255, 0.3);
+}
+
+/* Submit button */
+button[type="submit"] {
+  background-color: #005fff;
+  border: none;
+  color: white;
+  height: 3.5rem;
+  width: 3.5rem;
+  font-size: 1.2rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover,
+button[type="submit"]:focus {
+  background-color: #003dcc;
+}
+
+/* Loading overlay */
+.loading {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 2000;
+}
+
+.loading-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #202123;
+  padding: 2rem 3rem;
+  border-radius: 0.8rem;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
+  color: white;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.spinner {
+  border: 4px solid #333;
+  border-top: 4px solid #005fff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1.5s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Scrollbar for chat */
+.main-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background-color: #005fff;
+  border-radius: 10px;
+  border: 2px solid #1a1a1a;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .chat-window {
+    max-width: 100%;
+    padding: 0 0.75rem;
+  }
+}

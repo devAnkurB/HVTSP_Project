@@ -1,280 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Project Home</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: #f5f7fa;
-            color: #2c3e50;
-            line-height: 1.6;
-            padding: 2rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        h2 {
-            color: #2c3e50;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-
-        p {
-            color: #34495e;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        hr {
-            border: none;
-            border-top: 2px solid #e0e6ed;
-            margin: 2rem 0;
-        }
-
-        form {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .custom-file-upload {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border: 2px dashed #3498db;
-            border-radius: 5px;
-            background: #f8fafc;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            cursor: pointer;
-            transition: border-color 0.3s;
-        }
-        .custom-file-upload:hover {
-            border-color: #2980b9;
-        }
-        .custom-file-upload span {
-            color: #34495e;
-            font-size: 1rem;
-            flex: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            text-align: left;
-            margin-left: -0.7rem;
-            padding-left: 0.5rem;
-        }
-        input[type="file"] {
-            display: none;
-        }
-        .warning-message {
-            color: #e74c3c;
-            font-size: 0.85rem;
-            font-weight: bold;
-            min-height: 1.2em;
-            margin-bottom: 0.3rem;
-            display: block;
-            transition: opacity 0.2s;
-            opacity: 1;
-        }
-        .warning-message.hidden {
-            opacity: 0;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 0.8rem;
-            margin-bottom: 1rem;
-            border: 1px solid #e0e6ed;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-
-        button {
-            background-color: #3498db;
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            width: 100%;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #2980b9;
-        }
-
-        .loading {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 9999;
-        }
-        
-        .loading-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            min-width: 300px;
-        }
-        
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 2s linear infinite;
-            margin: 0 auto 1rem;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .loading-content p {
-            color: #2c3e50;
-            font-size: 1.1rem;
-            margin: 0;
-        }
-
-        .custom-tooltip {
-            position: fixed;
-            background: #222;
-            color: #fff;
-            padding: 0.6em 1em;
-            border-radius: 6px;
-            font-size: 1rem;
-            pointer-events: none;
-            z-index: 1000;
-            opacity: 0.95;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            transition: opacity 0.15s;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DocuBridge</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <h2>DocuBridge</h2>
-    <p>DocuBridge Assistant serves as an Excel assistant to aid users in analyzing and working with data. To get started, upload an Excel file and ask away!</p>
-    <hr />
-    <form method="POST" action="/upload" enctype="multipart/form-data" id="uploadForm">
-        <label class="custom-file-upload">
-            <input type="file" name="excel_file" accept=".xlsx,.xls,.xlsm,.xlsb" id="excelFileInput" />
-            <span id="fileName">Choose a file...</span>
-        </label>
-        <div id="fileWarning" class="warning-message hidden"></div>
-        <input type="text" name="user_question" placeholder="Ask a question..." id="userQuestionInput" />
-        <div id="questionWarning" class="warning-message hidden"></div>
-        <button type="submit" style="margin-top: 0.6rem;">Submit</button>
-    </form>
-    
-    <div class="loading" id="loadingScreen">
-        <div class="loading-content">
-            <div class="spinner"></div>
-            <p>Analyzing your file and generating response...</p>
-        </div>
+  <div class="header">DocuBridge</div>
+
+  <div class="main-content">
+    <div class="chat-window" id="chatBox">
+      <!-- Example messages for demo, you can remove these -->
+      <div class="message user-message">
+        <div class="bubble">What is the total expense for 2021?</div>
+      </div>
+      <div class="message file-message">
+        <a href="#" class="file-attachment" download id="downloadFileBtn" title="Download file">
+          <span class="file-icon">📄</span>
+          <div class="file-details">
+            <span class="file-name">financials_2021.xlsx</span>
+            <span class="file-size">2.3 MB</span>
+          </div>
+        </a>
+      </div>
+      <div class="message ai-message">
+        <div class="bubble">The total expense for 2021 is $4,200,000.</div>
+      </div>
+      <div class="message error-message">
+        <div class="bubble">Sorry, I couldn't read that file. Please check the format.</div>
+      </div>
     </div>
-    
-    <div id="fileTooltip" class="custom-tooltip" style="display:none;">Upload an Excel financial model and ask a question.</div>
-    <div id="textTooltip" class="custom-tooltip" style="display:none;">Example: What is the total revenue for 2022?</div>
-    
-    <script>
-        const MAX_FILE_SIZE = 10 * 1024 * 1024;
-        document.getElementById('uploadForm').addEventListener('submit', function(e) {
-            const fileInput = document.getElementById('excelFileInput');
-            const questionInput = document.getElementById('userQuestionInput');
-            const fileWarning = document.getElementById('fileWarning');
-            const questionWarning = document.getElementById('questionWarning');
-            let valid = true;
+  </div>
 
-            fileWarning.textContent = '';
-            fileWarning.classList.add('hidden');
-            questionWarning.textContent = '';
-            questionWarning.classList.add('hidden');
+  <form class="input-area" method="POST" action="/upload" enctype="multipart/form-data" id="uploadForm" novalidate>
+    <label class="upload-icon" title="Upload Excel File" for="excelFileInput">
+      <b>+</b>
+    </label>
+    <input type="file" name="excel_file" accept=".xlsx,.xls,.xlsm,.xlsb" id="excelFileInput" hidden />
+    <input type="text" name="user_question" id="userQuestionInput" placeholder="Ask something about your spreadsheet..." autocomplete="off" />
+    <button type="submit" title="Send question">➤</button>
+  </form>
 
-            if (fileInput.files.length === 0) {
-                fileWarning.textContent = 'Please upload a file.';
-                fileWarning.classList.remove('hidden');
-                setTimeout(() => { fileWarning.classList.add('hidden'); fileWarning.textContent = ''; }, 4000);
-                valid = false;
-            } else if (fileInput.files[0].size > MAX_FILE_SIZE) {
-                fileWarning.textContent = 'File is too large. Maximum allowed size is 10 MB.';
-                fileWarning.classList.remove('hidden');
-                setTimeout(() => { fileWarning.classList.add('hidden'); fileWarning.textContent = ''; }, 4000);
-                valid = false;
-            }
-            if (questionInput.value.trim() === '') {
-                questionWarning.textContent = 'Please enter a question.';
-                questionWarning.classList.remove('hidden');
-                setTimeout(() => { questionWarning.classList.add('hidden'); questionWarning.textContent = ''; }, 4000);
-                valid = false;
-            }
-            if (!valid) {
-                e.preventDefault();
-                return;
-            }
-            document.getElementById('loadingScreen').style.display = 'block';
-        });
+  <div class="loading" id="loadingScreen" aria-live="assertive" aria-busy="true" role="alert" aria-label="Loading">
+    <div class="loading-content">
+      <div class="spinner"></div>
+      <p>Analyzing your file and generating response...</p>
+    </div>
+  </div>
 
-        const excelFileInput = document.getElementById('excelFileInput');
-        const fileNameSpan = document.getElementById('fileName');
-        excelFileInput.addEventListener('change', function() {
-            if (this.files && this.files.length > 0) {
-                fileNameSpan.textContent = this.files[0].name;
-            } else {
-                fileNameSpan.textContent = 'Choose a file...';
-            }
-        });
-
-        const fileInput = document.querySelector('.custom-file-upload');
-        const textInput = document.getElementById('userQuestionInput');
-        const fileTooltip = document.getElementById('fileTooltip');
-        const textTooltip = document.getElementById('textTooltip');
-
-        function showTooltip(e, tooltip) {
-            tooltip.style.display = 'block';
-            tooltip.style.left = (e.clientX + 15) + 'px';
-            tooltip.style.top = (e.clientY + 15) + 'px';
-        }
-        function hideTooltip(tooltip) {
-            tooltip.style.display = 'none';
-        }
-
-        if (fileInput) {
-            fileInput.addEventListener('mousemove', e => showTooltip(e, fileTooltip));
-            fileInput.addEventListener('mouseleave', () => hideTooltip(fileTooltip));
-        }
-        if (textInput) {
-            textInput.addEventListener('mousemove', e => showTooltip(e, textTooltip));
-            textInput.addEventListener('mouseleave', () => hideTooltip(textTooltip));
-        }
-    </script>
+  <script src="script.js"></script>
 </body>
 </html>
