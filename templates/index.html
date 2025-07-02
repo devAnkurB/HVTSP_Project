@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Project Home</title>
+    <title>DocuBridge Financial Assistant</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -181,20 +181,25 @@
     </style>
 </head>
 <body>
+    <!-- Header and intro -->
     <h2>DocuBridge</h2>
     <p>DocuBridge Assistant serves as an Excel assistant to aid users in analyzing and working with data. To get started, upload an Excel file and ask away!</p>
     <hr />
+    <!-- Upload form: file input, question input, and submit button -->
     <form method="POST" action="/upload" enctype="multipart/form-data" id="uploadForm">
+        <!-- Custom file upload area -->
         <label class="custom-file-upload">
             <input type="file" name="excel_file" accept=".xlsx,.xls,.xlsm,.xlsb" id="excelFileInput" />
             <span id="fileName">Choose a file...</span>
         </label>
         <div id="fileWarning" class="warning-message hidden"></div>
+        <!-- User question input -->
         <input type="text" name="user_question" placeholder="Ask a question..." id="userQuestionInput" />
         <div id="questionWarning" class="warning-message hidden"></div>
         <button type="submit" style="margin-top: 0.6rem;">Submit</button>
     </form>
     
+    <!-- Loading overlay shown during file analysis/response generation -->
     <div class="loading" id="loadingScreen">
         <div class="loading-content">
             <div class="spinner"></div>
@@ -202,10 +207,12 @@
         </div>
     </div>
     
+    <!-- Floating tooltips for file and text input -->
     <div id="fileTooltip" class="custom-tooltip" style="display:none;">Upload an Excel financial model and ask a question.</div>
     <div id="textTooltip" class="custom-tooltip" style="display:none;">Example: What is the total revenue for 2022?</div>
     
     <script>
+        // Client-side validation for file size/type and question input
         const MAX_FILE_SIZE = 10 * 1024 * 1024;
         document.getElementById('uploadForm').addEventListener('submit', function(e) {
             const fileInput = document.getElementById('excelFileInput');
@@ -243,6 +250,7 @@
             document.getElementById('loadingScreen').style.display = 'block';
         });
 
+        // Show selected file name in the file upload area
         const excelFileInput = document.getElementById('excelFileInput');
         const fileNameSpan = document.getElementById('fileName');
         excelFileInput.addEventListener('change', function() {
@@ -253,6 +261,7 @@
             }
         });
 
+        // Floating tooltips for file and text input
         const fileInput = document.querySelector('.custom-file-upload');
         const textInput = document.getElementById('userQuestionInput');
         const fileTooltip = document.getElementById('fileTooltip');

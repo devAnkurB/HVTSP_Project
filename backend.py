@@ -1,3 +1,4 @@
+# backend.py - Core logic for DocuBridge Excel Assistant
 import pandas as pd
 import openpyxl
 import google.generativeai as genai
@@ -9,24 +10,22 @@ import uuid
 import re
 import markdown as md
 
+# Directory to store uploaded files
 UPLOAD_FOLDER = 'tmp'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-
+# Format a DataFrame as an HTML table for preview
+# Shows all rows if small, or first/last N rows if large
 def format_dataframe_for_display(df, max_rows_display=25):
-    if len(df) <= max_rows_display * 2:  # If small enough to show all
-        html_output = df.to_html(index=False,
-                                 classes='table table-striped',
-                                 border=0)
+    if len(df) <= max_rows_display * 2:
+        html_output = df.to_html(index=False, classes='table table-striped', border=0)
     else:
-        html_output = df.head(max_rows_display).to_html(
-            index=False, classes='table table-striped', border=0)
+        html_output = df.head(max_rows_display).to_html(index=False, classes='table table-striped', border=0)
         html_output += "<br>"
-        html_output += df.tail(max_rows_display).to_html(
-            index=False, classes='table table-striped', border=0)
+        html_output += df.tail(max_rows_display).to_html(index=False, classes='table table-striped', border=0)
     return html_output
 
-
+# Get a Gemini (Google AI) client using the API key from environment
 def get_gemini_client():
     api_key = os.getenv('GEMINI_API_KEY')
     if not api_key:
@@ -34,11 +33,12 @@ def get_gemini_client():
     genai.configure(api_key=api_key)
     return genai.GenerativeModel('gemini-2.0-flash')
 
-
+# Generate a response from Gemini based on file data, user question, and chat history
 def get_gemini_response(file_data, user_question="", chat_history=None):
     model = get_gemini_client()
     if not model:
         return "Please use a Gemini API key to access this feature."
+    # Build prompt with context and instructions
     if chat_history:
         history_str = "\n".join([
             f"User: {q['question']}\nAssistant: {q['answer']}"
@@ -105,7 +105,7 @@ Respond as a helpful, proactive Excel assistant.
         print(f"AI API Error: {e}")
         return "The AI service is currently unavailable, please try again later."
 
-
+# Summarize a DataFrame for the AI prompt (columns, types, stats, sample rows)
 def summarize_dataframe(df, max_rows=100):
     summary = []
     summary.append(f"Columns: {', '.join(df.columns.astype(str))}")
@@ -124,12 +124,12 @@ def summarize_dataframe(df, max_rows=100):
         summary.append("Sample rows (last 10):\n" + df.tail(10).to_string())
     return '\n\n'.join(summary)
 
-
+# Handle file upload, validation, and initial question
 def handle_upload(request):
     excel_file = request.files.get('excel_file')
     user_question = request.form.get('user_question')
 
-    
+    # Backend file size check (10MB limit)
     excel_file.seek(0, os.SEEK_END)
     file_size = excel_file.tell()
     excel_file.seek(0) # Reset file pointer
@@ -137,12 +137,14 @@ def handle_upload(request):
         print(f"Backend Check Failed: File size ({file_size / (1024*1024):.2f}MB) exceeds 10MB limit. User redirected.")
         return redirect(url_for('index'))
 
+    # Backend file type check
     filename = excel_file.filename.lower()
     file_extension = os.path.splitext(filename)[1]
     if file_extension not in ['.xls', '.xlsx']:
         print(f"Backend Check Failed: Invalid file type uploaded ('{file_extension}'). User redirected.")
         return redirect(url_for('index'))
 
+    # Save file to disk
     unique_id = str(uuid.uuid4())
     save_path = os.path.join(UPLOAD_FOLDER, unique_id + file_extension)
     excel_file.save(save_path)
@@ -151,42 +153,43 @@ def handle_upload(request):
     session['excel_file_ext'] = file_extension
     
     try:
+        # Get sheet names and set the first as default
         xls = pd.ExcelFile(save_path)
         sheet_names = xls.sheet_names
         current_sheet = sheet_names[0]
         session['sheet_names'] = sheet_names
         session['current_sheet'] = current_sheet
+        # Read the first sheet
         df = pd.read_excel(save_path, sheet_name=current_sheet)
     except Exception as e:
         print(f"Backend Check Failed: Could not read Excel file. Error: {e}. User redirected.")
         return redirect(url_for('index'))
     
+    # Start new chat history
     session['chat_history'] = []
     
+    # Summarize file and get initial AI response
     file_summary = summarize_dataframe(df)
     gemini_response = get_gemini_response(file_summary, user_question)
-    
     session['chat_history'].append({'question': user_question, 'answer': gemini_response})
     session['file_preview_html'] = format_dataframe_for_display(df)
-    
     return redirect(url_for('chat'))
 
-
+# Handle chat UI, follow-up questions, and sheet switching
 def handle_chat(request):
     file_path = session.get('excel_file_path')
     if not file_path or not os.path.exists(file_path):
         return redirect(url_for('index'))
 
-    # Handle state changes on POST requests
+    # Handle POST: sheet change or new question
     if request.method == 'POST':
-        # User changed the sheet
+        # Sheet change: update current sheet and clear chat
         if request.form.get('action') == 'change_sheet':
             new_sheet = request.form.get('sheet_selection')
             if new_sheet in session.get('sheet_names', []):
                 session['current_sheet'] = new_sheet
-                session['chat_history'] = []  # Clear chat history
-        
-        # User asked a new question
+                session['chat_history'] = []
+        # New question: process and get AI response
         elif user_question := request.form.get('user_question'):
             current_sheet = session.get('current_sheet')
             try:
@@ -200,11 +203,10 @@ def handle_chat(request):
             gemini_response = re.sub(r'^\s*DocuBridge Assistant:\s*', '', gemini_response, flags=re.IGNORECASE)
             chat_history.append({'question': user_question, 'answer': gemini_response})
             session['chat_history'] = chat_history
-
-        # After any POST action, redirect to the GET endpoint to render the page
+        # After POST, redirect to GET to render page
         return redirect(url_for('chat'))
 
-    # Handle page rendering on GET requests
+    # GET: render chat page with current sheet and chat history
     current_sheet = session.get('current_sheet')
     try:
         df = pd.read_excel(file_path, sheet_name=current_sheet)
@@ -215,7 +217,7 @@ def handle_chat(request):
     sheet_names = session.get('sheet_names', [])
     chat_history = session.get('chat_history', [])
     
-    # Determine input placeholder
+    # Set input placeholder based on chat history
     if len(chat_history) == 0:
         input_placeholder = "Ask a question..."
     else:
@@ -237,7 +239,6 @@ def handle_chat(request):
         for name in sheet_names:
             selected = 'selected' if name == current_sheet else ''
             options += f'<option value="{name}" {selected}>{name}</option>'
-        
         sheet_selector_html = f'''
         <div class="sheet-selector">
             <form method="POST" action="/chat" id="sheetForm">
@@ -251,6 +252,7 @@ def handle_chat(request):
         </div>
         '''
 
+    # Render the chat UI page
     return f"""
     <!DOCTYPE html>
     <html>
@@ -478,4 +480,4 @@ def handle_chat(request):
         </script>
     </body>
     </html>
-        """
+    """
