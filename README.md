@@ -33,7 +33,7 @@ DocuBridge is an AI-powered assistant that lets you chat with your Excel files. 
      ```
 4. **Run the app:**
    ```bash
-   python backend.py
+   python main.py
    ```
 5. **Open your browser:**
    - Go to `http://localhost:5000`
