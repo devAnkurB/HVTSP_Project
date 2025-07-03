@@ -260,20 +260,33 @@ def handle_chat(request):
         <title>DocuBridge - Chat</title>
         <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap' rel='stylesheet'>
         <style>
+            html, body {{
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                font-size: 16px;
+            }}
             body {{
                 background-color: #f5f7fa;
                 color: #2c3e50;
                 font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 margin: 0;
-                padding: 1rem 2rem 2rem 2rem;
+                padding: 2vw 2vw 3vw 2vw;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
             }}
             .container {{
-                max-width: 800px;
-                margin: 1.2rem auto 2rem auto;
+                max-width: 50rem;
+                margin: 2vw auto 2vw auto;
                 background: #fff;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(44, 62, 80, 0.08);
-                padding: 1.5rem 2rem 2rem 2rem;
+                border-radius: 0.75rem;
+                box-shadow: 0 0.25rem 0.75rem rgba(44, 62, 80, 0.08);
+                padding: 2vw 3vw 3vw 3vw;
+                display: flex;
+                flex-direction: column;
+                min-height: 80vh;
+                flex: 1 1 auto;
             }}
             h2 {{
                 text-align: center;
@@ -296,7 +309,7 @@ def handle_chat(request):
             .sheet-selector {{
                 margin-bottom: 1.5rem;
                 background: #f8fafc;
-                border-radius: 8px;
+                border-radius: 0.5rem;
                 padding: 1rem 1.2rem;
                 border: 1px solid #e0e6ed;
             }}
@@ -311,22 +324,22 @@ def handle_chat(request):
             }}
             .sheet-selector select {{
                 padding: 0.5rem;
-                border-radius: 5px;
+                border-radius: 0.3rem;
                 border: 1px solid #e0e6ed;
             }}
             .sheet-selector small {{
                 color: #7f8c8d;
             }}
             .file-info {{
-                margin-bottom: 1.5rem;
+                margin-bottom: 1.1rem;
                 background: #f8fafc;
-                border-radius: 8px;
+                border-radius: 0.5rem;
                 padding: 1rem 1.2rem;
                 border: 1px solid #e0e6ed;
                 max-width: 100%;
                 overflow-x: auto;
-                max-height: 340px;
-                min-height: 80px;
+                max-height: 22vh;
+                min-height: 12vh;
                 box-sizing: border-box;
             }}
             .file-info ul {{
@@ -341,9 +354,9 @@ def handle_chat(request):
                 border-collapse: collapse;
                 margin-top: 0.5rem;
                 background: #fff;
-                border-radius: 6px;
-                overflow: hidden;
-                font-size: 0.9rem;
+                border-radius: 0.4rem;
+                overflow: auto;
+                font-size: 0.95rem;
             }}
             .file-info th, .file-info td {{
                 border: 1px solid #e0e6ed;
@@ -357,10 +370,12 @@ def handle_chat(request):
             }}
             .chat-container {{
                 background: #f8fafc;
-                border-radius: 8px;
+                border-radius: 0.5rem;
                 border: 1px solid #e0e6ed;
                 padding: 1rem;
-                max-height: 320px;
+                flex: 2 1 0%;
+                min-height: 20vh;
+                max-height: 70vh;
                 overflow-y: auto;
                 margin-bottom: 1.2rem;
                 display: flex;
@@ -369,7 +384,7 @@ def handle_chat(request):
             }}
             .chat-bubble {{
                 padding: 0.7rem 1rem;
-                border-radius: 8px;
+                border-radius: 0.5rem;
                 max-width: 90%;
                 word-break: break-word;
                 font-size: 1.05rem;
@@ -400,7 +415,7 @@ def handle_chat(request):
                 flex: 1;
                 padding: 0.8rem;
                 border: 1px solid #e0e6ed;
-                border-radius: 5px;
+                border-radius: 0.3rem;
                 font-size: 1rem;
             }}
             button {{
@@ -408,7 +423,7 @@ def handle_chat(request):
                 color: white;
                 padding: 0.8rem 1.5rem;
                 border: none;
-                border-radius: 5px;
+                border-radius: 0.3rem;
                 cursor: pointer;
                 font-size: 1rem;
                 transition: background-color 0.3s ease;
@@ -432,6 +447,55 @@ def handle_chat(request):
             .back-link:hover {{
                 color: #217dbb;
                 text-decoration: underline;
+            }}
+            @media (max-width: 900px) {{
+                .container {{
+                    max-width: 98vw;
+                    padding: 2vw 2vw 3vw 2vw;
+                }}
+                .file-info, .chat-container {{
+                    padding: 0.7rem 0.5rem;
+                }}
+                .file-info {{
+                    max-height: 28vh;
+                    min-height: 10vh;
+                }}
+                .chat-container {{
+                    max-height: 40vh;
+                    min-height: 10vh;
+                    flex: 1 1 0%;
+                }}
+            }}
+            @media (max-width: 600px) {{
+                html, body {{
+                    font-size: 14px;
+                }}
+                .container {{
+                    padding: 1vw 0.5vw 2vw 0.5vw;
+                }}
+                .file-info, .chat-container {{
+                    padding: 0.5rem 0.2rem;
+                }}
+                .chat-bubble {{
+                    font-size: 0.98rem;
+                    padding: 0.5rem 0.5rem;
+                }}
+                input[type="text"] {{
+                    font-size: 0.95rem;
+                }}
+                button {{
+                    font-size: 0.95rem;
+                    padding: 0.7rem 1rem;
+                }}
+                .chat-container {{
+                    max-height: 28vh;
+                    min-height: 8vh;
+                    flex: 1 1 0%;
+                }}
+                .file-info {{
+                    max-height: 18vh;
+                    min-height: 8vh;
+                }}
             }}
         </style>
     </head>
@@ -463,7 +527,7 @@ def handle_chat(request):
                 var chatDiv = document.getElementById('chatContainer');
                 var typingBubble = document.createElement('div');
                 typingBubble.className = 'chat-bubble bot typing';
-                typingBubble.innerHTML = '<strong>DocuBridge Assistant:</strong> <span id="typingDots">.</span> DocuBridge Assistant is typing...';
+                typingBubble.innerHTML = '<strong>DocuBridge Assistant:</strong> <span id="typingDots">.</span>';
                 chatDiv.appendChild(typingBubble);
                 chatDiv.scrollTop = chatDiv.scrollHeight;
                 // Animate the dots
