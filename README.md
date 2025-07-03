@@ -8,7 +8,7 @@ DocuBridge is an AI-powered assistant that lets you chat with your Excel files. 
 
 - **Flask** — Python web framework for the backend and routing
 - **Pandas** — For reading, summarizing, and displaying Excel data
-- **Google Gemini API** (or OpenAI, depending on configuration) — For generating AI responses
+- **Google Gemini API** — For generating AI responses
 - **openpyxl** — For reading Excel files
 - **Markdown** — For rendering AI responses with formatting
 - **HTML/CSS/JavaScript** — For the interactive chat UI
