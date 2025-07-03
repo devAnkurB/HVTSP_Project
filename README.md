@@ -12,7 +12,7 @@ DocuBridge is an AI-powered assistant that lets you chat with your Excel files. 
 - **openpyxl** — For reading Excel files
 - **Markdown** — For rendering AI responses with formatting
 - **HTML/CSS/JavaScript** — For the interactive chat UI
-- **Replit** (or Glitch, PythonAnywhere, etc.) — For easy cloud deployment
+- **Replit** — For beta testing
 
 ## How to Install and Run Locally
 
@@ -43,12 +43,3 @@ DocuBridge is an AI-powered assistant that lets you chat with your Excel files. 
 - "What are the top 5 countries with the highest vaccination rates in 2023?"
 - "Show me the trend for vaccine coverage in Bangladesh from 2017 to 2023."
 - "How do I calculate the average value for column E in Excel?"
-
-## My Contributions
-
-I contributed to the development of this app by:
-
-- Working on the backend logic, including file upload handling and implementing the API calls to fetch responses from the AI bot.
-- Designing and improving the user interface (UI) to ensure a smooth, responsive, and user-friendly chat experience.
-
----
